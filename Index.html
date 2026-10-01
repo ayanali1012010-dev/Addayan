@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AYAN KEY — PORTAL</title>
+
+  <!-- ADSTERRA POPUNDER & SOCIAL BAR -->
+  <script src="https://pl31582757.profitablecpmnetwork.com/1f/89/9d/1f899d47c5d0db2908051a84f3eb7826.js"></script>
+  <script src="https://pl31582759.profitablecpmnetwork.com/fd/24/c2/fd24c234907ecfa05fa5f9175440d993.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif; }
+    
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      background-color: #030605;
+      display: none;
+    }
+
+    body {
+      background-color: #0b0c10;
+      color: #c5c6c7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    header {
+      width: 100%;
+      background: #111318;
+      border-bottom: 1px solid #1f222d;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .header-logo { font-size: 16px; font-weight: 800; color: #ffffff; letter-spacing: 2px; }
+    .header-logo span { color: #00e5ff; }
+    .badge { background: #238636; color: #ffffff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+
+    .main-wrapper {
+      max-width: 460px;
+      width: 100%;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 0 auto;
+    }
+
+    .ninja-title { font-size: 26px; font-weight: 900; letter-spacing: 4px; color: #ffffff; text-align: center; }
+    .ninja-title span { color: #00e5ff; }
+    .ninja-sub { font-size: 11px; letter-spacing: 2px; color: #555e70; text-align: center; margin-bottom: 20px; font-weight: 700; }
+
+    .card {
+      background: #12141a;
+      border: 1px solid #1f222d;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .btn-group { display: flex; gap: 12px; }
+    .btn-3h { flex: 1; padding: 16px 8px; border-radius: 8px; border: 1.5px solid #ffb703; background: rgba(255, 183, 3, 0.05); color: #ffb703; font-size: 15px; font-weight: 900; cursor: pointer; }
+    .btn-6h { flex: 1; padding: 16px 8px; border-radius: 8px; border: 1.5px solid #00e5ff; background: rgba(0, 229, 255, 0.05); color: #00e5ff; font-size: 15px; font-weight: 900; cursor: pointer; }
+
+    .ad-banner {
+      width: 100%;
+      min-height: 250px;
+      background: #070709;
+      border: 1px solid #1a1c23;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .ad-banner iframe { width: 300px; height: 250px; border: none; overflow: hidden; }
+
+    .ad-native { width: 100%; min-height: 90px; background: #0f1116; border: 1px solid #212631; border-radius: 10px; margin: 12px 0; padding: 6px; overflow: hidden; }
+    .rules-card { background: #101217; border: 1px solid #1a1e27; border-radius: 14px; width: 100%; padding: 16px; margin-bottom: 16px; text-align: left; }
+    .rules-title { font-size: 11px; letter-spacing: 2px; color: #7d8594; font-weight: 800; margin-bottom: 8px; }
+    .rules-list { list-style: none; font-size: 12px; color: #8b949e; line-height: 1.6; }
+
+    .text-10 {
+      background: #111319;
+      border-left: 3px solid #00e5ff;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #8b949e;
+      text-align: left;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 16px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: 0.2s;
+      background: #238636;
+      color: #fff;
+    }
+    .btn-action:disabled {
+      background: #1b262e;
+      color: #555e70;
+      cursor: not-allowed;
+    }
+
+    /* OVERLAY POPUP */
+    #sponsorModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(8, 10, 15, 0.94);
+      backdrop-filter: blur(8px);
+      z-index: 999999;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .modal-box {
+      max-width: 380px;
+      width: 100%;
+      background: #12151e;
+      border: 1px solid #202636;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .key-container {
+      background: #050a07;
+      border: 1px dashed #00ff66;
+      border-radius: 10px;
+      padding: 14px;
+      margin: 12px 0 8px 0;
+      word-break: break-all;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 17px;
+      color: #00ff66;
+      font-weight: bold;
+      text-shadow: 0 0 8px rgba(0, 255, 102, 0.6);
+      letter-spacing: 1.5px;
+    }
+
+    .validity-timer {
+      font-size: 12px;
+      color: #ffb703;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .step-section { display: none; width: 100%; }
+    .active-step { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- MATRIX BACKGROUND -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- SPONSORED POPUP VERIFICATION (SCREENSHOT SPEC) -->
+  <div id="sponsorModal">
+    <div class="modal-box">
+      <div id="modalStepTitle" style="color: #00e5ff; font-weight: 800; font-size: 13px; letter-spacing: 0.5px; margin-bottom: 6px;">
+        SPONSORED VERIFICATION
+      </div>
+      <div id="modalNotice" style="color: #ff5252; font-size: 12px; margin-bottom: 12px; font-weight: 600;">
+        Please view ad to unlock content (10s)
+      </div>
+
+      <div style="width: 100%; height: 260px; border-radius: 10px; overflow: hidden; border: 1px solid #22293a; background: #000; margin-bottom: 14px; display: flex; justify-content: center; align-items: center;">
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#000;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"
+                style="width: 100%; height: 100%; border: none;">
+        </iframe>
+      </div>
+
+      <button id="btnUnlockModal" class="btn-action" disabled onclick="unlockStepPage()">
+        PLEASE WAIT (10s)...
+      </button>
+    </div>
+  </div>
+
+  <header id="mainHeader">
+    <div class="header-logo">AYAN <span id="headerLogoSub">PORTAL</span></div>
+    <span class="badge" id="headerBadge">START</span>
+  </header>
+
+  <!-- ==================== VIEW 1: HOME PAGE ==================== -->
+  <section id="view-index" class="step-section active-step">
+    <div class="main-wrapper">
+      <div class="ninja-title">AYAN <span>KEY</span></div>
+      <div class="ninja-sub">FREE KEY — 3H OR 6H SESSION</div>
+
+      <!-- AD 1 -->
+      <div class="ad-banner">
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenueformat.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe>
+      </div>
+      <div class="text-10">Select your preferred key allocation duration to begin security clearance.</div>
+
+      <!-- SELECTION CARD -->
+      <div class="card">
+        <div style="font-size: 11px; color: #7d8594; margin-bottom: 12px; font-weight: bold; text-transform: uppercase;">CHOOSE YOUR SESSION DURATION</div>
+        <div class="btn-group">
+          <button class="btn-3h" onclick="startFlow(4, 3)">3 HOURS</button>
+          <button class="btn-6h" onclick="startFlow(6, 6)">6 HOURS</button>
+        </div>
+      </div>
+
+      <!-- AD 2 -->
+      <div class="ad-native">
+        <script async="async" data-cfasync="false" src="https://pl31579956.profitableratecpmnetwork.com/882389533e02c36e6957b2a986f7bd41/invoke.js"></script>
+        <div id="container-882389533e02c36e6957b2a986f7bd41"></div>
+      </div>
+      <div class="text-10">Each allocated key gives uninterrupted high-speed access per connected device.</div>
+
+      <!-- RULES -->
+      <div class="rules-card">
+        <div class="rules-title">RULES</div>
+        <ul class="rules-list">
+          <li>• Key is valid for 3 hours (4 steps) or 6 hours (6 steps).</li>
+          <li>• 1 key = 1 device — cannot be shared.</li>
+          <li>• Complete all steps to generate your authentication key.</li>
+        </ul>
+      </div>
+
+      <!-- AD 3 -->
+      <div class="ad-banner">
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenueformat.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe>
+      </div>
+      <div class="text-10">Security tokens are matched against network servers to establish validity.</div>
+    </div>
+  </section>
+
+  <!-- ==================== VIEW 2: DYNAMIC STEPS (7 ADS) ==================== -->
+  <section id="view-step-container" class="step-section">
+    <div class="main-wrapper">
+
+      <div class="card" style="border-color: #00e5ff;">
+        <div id="mainTimerText" style="color: #00e5ff; font-weight: bold; font-size: 14px;">
+          ⏳ VERIFYING SESSION: PLEASE WAIT (18s)...
+        </div>
+      </div>
+
+      <!-- AD 1 -->
+      <div class="ad-banner">
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe>
+      </div>
+      <div class="text-10">Security tokens are matched against network servers to establish validity.</div>
+
+      <!-- STEP DETAIL CARD -->
+      <div class="card" style="text-align: left;">
+        <h4 id="stepCardTitle" style="color: #ffffff; font-size: 14px; margin-bottom: 6px;">Step Verification</h4>
+        <p style="font-size: 12px; color: #8b949e;">Please wait for security token allocation and node sync to clear this gateway stage.</p>
+      </div>
+
+      <!-- AD 2 -->
+      <div class="ad-banner">
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe>
+      </div>
+      <div class="text-10">Always ensure your internet connection remains stable during this process.</div>
+
+      <!-- AD 3 -->
+      <div class="ad-banner">
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe>
+      </div>
+      <div class="text-10">Do not refresh browser window while steps are being verified.</div>
+
+      <!-- CONTINUE BUTTON -->
+      <div class="card">
+        <button id="btnContinueStep" class="btn-action" disabled onclick="handleContinueClick()">
+          ⏳ PLEASE WAIT (18s)...
+        </button>
+      </div>
+
+      <!-- AD 4 -->
+      <div class="ad-banner">
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe>
+      </div>
+      <div class="text-10">Each allocated key gives uninterrupted high-speed access per connected device.</div>
+
+      <!-- AD 5 -->
+      <div class="ad-banner">
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe>
+      </div>
+      <div class="text-10">Follow all system guidelines to receive valid authentication credentials instantly.</div>
+
+      <!-- AD 6 -->
+      <div class="ad-banner">
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe>
+      </div>
+      <div class="text-10">Finalizing node synchronization enables immediate release of the session token.</div>
+
+      <!-- AD 7 -->
+      <div class="ad-banner">
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== VIEW 3: FINAL KEY GENERATION ==================== -->
+  <section id="view-final" class="step-section">
+    <div class="main-wrapper">
+      <div class="card" style="border-color: #00ff66;">
+        <h3 id="statusTitle" style="color: #00e5ff; font-size: 15px; margin-bottom: 6px; letter-spacing: 0.5px;">⚡ GENERATING SECURE KEY (15s)...</h3>
+        <p id="statusDesc" style="font-size: 12px; color: #8b949e;">System is allocating unique session token and hardware signature...</p>
+        <div id="keyBox" class="key-container">LOCKED — PLEASE WAIT...</div>
+        <div id="validityBox" class="validity-timer" style="display: none;">⏳ KEY EXPIRES IN: <span id="expireTimer">--:--:--</span></div>
+        <button id="btnCopy" class="btn-action" disabled onclick="copyKey()">⏳ WAIT 15s TO GENERATE KEY</button>
+      </div>
+
+      <div class="ad-banner"><iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe></div>
+      <div class="text-10">This key is strictly tied to this hardware node and valid for single user access.</div>
+
+      <div class="card" style="text-align: left;">
+        <h4 style="color: #ffffff; font-size: 14px; margin-bottom: 6px;">Activation Guidelines</h4>
+        <p style="font-size: 12px; color: #8b949e; line-height: 1.6;">
+          1. Wait for countdown to reveal and unlock your key.<br>
+          2. Copy and paste it directly into your loader/client.<br>
+          3. After expiration, you must complete all steps again.
+        </p>
+      </div>
+
+      <div class="ad-banner"><iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe></div>
+      <div class="text-10">Node handshake successful. Security encryption level: AES-256 GCM.</div>
+
+      <div class="ad-banner"><iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenuegate.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe></div>
+    </div>
+  </section>
+
+  <!-- ==================== LOGIC ==================== -->
+  <script>
+    // Direct Ad Link jo button dabane par khulegi
+    const AD_DIRECT_LINK = "https://www.profitablecpmnetwork.com/fd/24/c2/fd24c234907ecfa05fa5f9175440d993.js";
+
+    let currentTotalSteps = 6;
+    let currentSessionHours = 6;
+    let currentStepNumber = 1;
+    let modalTimerInterval = null;
+    let stepTimerInterval = null;
+
+    function showSection(id) {
+      document.querySelectorAll('.step-section').forEach(sec => sec.classList.remove('active-step'));
+      document.getElementById(id).classList.add('active-step');
+      window.scrollTo(0, 0);
+    }
+
+    function startFlow(totalSteps, hours) {
+      currentTotalSteps = totalSteps;
+      currentSessionHours = hours;
+      currentStepNumber = 1;
+      loadStep(1);
+    }
+
+    function loadStep(num) {
+      currentStepNumber = num;
+      document.getElementById('headerBadge').innerText = `STEP ${num}/${currentTotalSteps}`;
+      document.getElementById('stepCardTitle').innerText = `Step ${num}: Security Token Allocation`;
+      showSection('view-step-container');
+
+      // Har step ke shuru me sponsored overlay popup
+      showSponsorModal(num);
+    }
+
+    function showSponsorModal(stepNum) {
+      const modal = document.getElementById('sponsorModal');
+      const title = document.getElementById('modalStepTitle');
+      const notice = document.getElementById('modalNotice');
+      const btn = document.getElementById('btnUnlockModal');
+
+      title.innerText = `SPONSORED VERIFICATION (STEP ${stepNum}/${currentTotalSteps})`;
+      notice.innerText = "Please view ad to unlock content (10s)";
+      notice.style.color = "#ff5252";
+      btn.disabled = true;
+      btn.innerText = "PLEASE WAIT (10s)...";
+      modal.style.display = 'flex';
+
+      let modalSec = 10;
+      if (modalTimerInterval) clearInterval(modalTimerInterval);
+
+      modalTimerInterval = setInterval(() => {
+        modalSec--;
+        if (modalSec > 0) {
+          notice.innerText = `Please view ad to unlock content (${modalSec}s)`;
+          btn.innerText = `PLEASE WAIT (${modalSec}s)...`;
+        } else {
+          clearInterval(modalTimerInterval);
+          notice.innerText = "✔ Ad verification completed!";
+          notice.style.color = "#3fb950";
+          btn.disabled = false;
+          btn.innerText = "CONTINUE TO PAGE ➔";
+        }
+      }, 1000);
+    }
+
+    function unlockStepPage() {
+      document.getElementById('sponsorModal').style.display = 'none';
+      startMainPageStepTimer();
+    }
+
+    function startMainPageStepTimer() {
+      let seconds = 18;
+      const mainTimer = document.getElementById('mainTimerText');
+      const btnStep = document.getElementById('btnContinueStep');
+
+      btnStep.disabled = true;
+      mainTimer.innerText = `⏳ VERIFYING SESSION: PLEASE WAIT (${seconds}s)...`;
+      btnStep.innerText = `⏳ PLEASE WAIT (${seconds}s)...`;
+
+      if (stepTimerInterval) clearInterval(stepTimerInterval);
+
+      stepTimerInterval = setInterval(() => {
+        seconds--;
+        if (seconds > 0) {
+          mainTimer.innerText = `⏳ VERIFYING SESSION: PLEASE WAIT (${seconds}s)...`;
+          btnStep.innerText = `⏳ PLEASE WAIT (${seconds}s)...`;
+        } else {
+          clearInterval(stepTimerInterval);
+          mainTimer.innerText = "✔ SESSION READY & VALIDATED!";
+          btnStep.disabled = false;
+          if (currentStepNumber === currentTotalSteps) {
+            btnStep.innerText = "GET YOUR KEY ➔";
+          } else {
+            btnStep.innerText = `CONTINUE TO STEP ${currentStepNumber + 1} ➔`;
+          }
+        }
+      }, 1000);
+    }
+
+    function handleContinueClick() {
+      let shouldShowAd = false;
+
+      // 3 Hours (4 Steps): Only Step 1 and Step 3 trigger ad
+      if (currentTotalSteps === 4) {
+        if (currentStepNumber === 1 || currentStepNumber === 3) {
+          shouldShowAd = true;
+        }
+      }
+      // 6 Hours (6 Steps): Only Step 1, 3, 5, and 6 trigger ad
+      else if (currentTotalSteps === 6) {
+        if (currentStepNumber === 1 || currentStepNumber === 3 || currentStepNumber === 5 || currentStepNumber === 6) {
+          shouldShowAd = true;
+        }
+      }
+
+      if (shouldShowAd) {
+        window.open(AD_DIRECT_LINK, '_blank');
+      }
+
+      if (currentStepNumber < currentTotalSteps) {
+        loadStep(currentStepNumber + 1);
+      } else {
+        goToFinalStep();
+      }
+    }
+
+    function goToFinalStep() {
+      document.getElementById('matrixCanvas').style.display = 'block';
+      document.getElementById('headerBadge').innerText = 'SECURED';
+      document.getElementById('headerBadge').style.background = '#00ff66';
+      document.getElementById('headerBadge').style.color = '#000';
+      document.getElementById('headerLogoSub').style.color = '#00ff66';
+      showSection('view-final');
+      initFinalKeyLogic();
+    }
+
+    /* --- MATRIX CANVAS BACKGROUND --- */
+    const canvas = document.getElementById("matrixCanvas");
+    const ctx = canvas.getContext("2d");
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const chars = "0123456789ABCDEF<>/*+-~_#[]{}AYAN";
+    const fontSize = 14;
+    let drops = [];
+    function initDrops() {
+      const columns = Math.floor(canvas.width / fontSize);
+      drops = [];
+      for (let i = 0; i < columns; i++) drops[i] = Math.floor(Math.random() * -50);
+    }
+    initDrops();
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(3, 6, 5, 0.08)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ff66";
+      ctx.font = fontSize + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 40);
+
+    /* --- KEY LOGIC --- */
+    let activeKey = localStorage.getItem("ayan_active_key");
+    let expiryTime = localStorage.getItem("ayan_key_expiry");
+
+    function generateRandomKey() {
+      const hex = "0123456789ABCDEF";
+      let k1 = "", k2 = "";
+      for (let i = 0; i < 4; i++) {
+        k1 += hex.charAt(Math.floor(Math.random() * hex.length));
+        k2 += hex.charAt(Math.floor(Math.random() * hex.length));
+      }
+      return `AYAN-${k1}-${k2}-SECURE`;
+    }
+
+    function resetToHome() {
+      localStorage.removeItem("ayan_active_key");
+      localStorage.removeItem("ayan_key_expiry");
+      alert("Key expire ho chuki hai! Kripya steps dobara poore karein.");
+      document.getElementById('matrixCanvas').style.display = 'none';
+      document.getElementById('headerBadge').innerText = 'START';
+      document.getElementById('headerBadge').style.background = '#238636';
+      document.getElementById('headerBadge').style.color = '#ffffff';
+      document.getElementById('headerLogoSub').style.color = '#00e5ff';
+      showSection('view-index');
+    }
+
+    function unlockInterface(keyStr, targetExpiry) {
+      document.getElementById("statusTitle").innerText = "✔ ACTIVE SESSION KEY FOUND";
+      document.getElementById("statusTitle").style.color = "#00ff66";
+      document.getElementById("statusDesc").innerText = `Aapka ${currentSessionHours}-ghante ka session active hai.`;
+      document.getElementById("keyBox").innerText = keyStr;
+      document.getElementById("validityBox").style.display = "block";
+
+      const btn = document.getElementById("btnCopy");
+      btn.disabled = false;
+      btn.innerText = "📋 COPY ACCESS KEY";
+
+      runCountdown(targetExpiry);
+    }
+
+    function initFinalKeyLogic() {
+      const now = Date.now();
+      if (activeKey && expiryTime) {
+        if (now >= parseInt(expiryTime, 10)) {
+          resetToHome();
+        } else {
+          unlockInterface(activeKey, parseInt(expiryTime, 10));
+        }
+      } else {
+        let waitSeconds = 15;
+        const waitInterval = setInterval(() => {
+          waitSeconds--;
+          if (waitSeconds > 0) {
+            document.getElementById("statusTitle").innerText = `⚡ GENERATING SECURE KEY (${waitSeconds}s)...`;
+            document.getElementById("btnCopy").innerText = `⏳ WAIT ${waitSeconds}s TO GENERATE KEY`;
+          } else {
+            clearInterval(waitInterval);
+            const newKey = generateRandomKey();
+            const totalDurationMs = currentSessionHours * 60 * 60 * 1000;
+            const targetExpiry = Date.now() + totalDurationMs;
+
+            localStorage.setItem("ayan_active_key", newKey);
+            localStorage.setItem("ayan_key_expiry", targetExpiry);
+            activeKey = newKey;
+
+            unlockInterface(newKey, targetExpiry);
+          }
+        }, 1000);
+      }
+    }
+
+    function runCountdown(expiryTimestamp) {
+      const expireEl = document.getElementById("expireTimer");
+      const timerInterval = setInterval(() => {
+        const currentTime = Date.now();
+        const diff = expiryTimestamp - currentTime;
+
+        if (diff <= 0) {
+          clearInterval(timerInterval);
+          resetToHome();
+        } else {
+          const totalSeconds = Math.floor(diff / 1000);
+          const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+          const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+          const s = String(totalSeconds % 60).padStart(2, "0");
+          expireEl.innerText = `${h}:${m}:${s}`;
+        }
+      }, 1000);
+    }
+
+    function copyKey() {
+      if (!activeKey) return;
+      navigator.clipboard.writeText(activeKey).then(() => {
+        const btn = document.getElementById("btnCopy");
+        btn.innerText = "✔ COPIED TO CLIPBOARD!";
+        btn.style.background = "#2ea043";
+        setTimeout(() => {
+          btn.innerText = "📋 COPY ACCESS KEY";
+          btn.style.background = "#00ff66";
+        }, 3000);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (activeKey && expiryTime && Date.now() < parseInt(expiryTime, 10)) {
+        goToFinalStep();
+      }
+    });
+  </script>
+</body>
+</html>
