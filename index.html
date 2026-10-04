@@ -250,7 +250,7 @@
     </div>
   </section>
 
-  <!-- DYNAMIC STEP VIEW (7 ADS) -->
+  <!-- DYNAMIC STEP VIEW -->
   <section id="view-step-container" class="step-section">
     <div class="main-wrapper">
 
@@ -349,8 +349,12 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // Aapki exact Adsterra Direct Link yahan set hai
     const AD_DIRECT_LINK = "https://www.profitableratecpmnetwork.com/edi67kf4j?key=e6c73630469a3f3caec524d8a7a8681c";
+    const FIREBASE_DB_URL = "https://vpna-13387-default-rtdb.firebaseio.com";
+
+    // URL से डिवाइस आईडी लेना (?id=xxx)
+    const urlParams = new URLSearchParams(window.location.search);
+    let deviceId = urlParams.get('id');
 
     let currentTotalSteps = parseInt(sessionStorage.getItem("ayan_total_steps") || "6", 10);
     let currentSessionHours = parseInt(sessionStorage.getItem("ayan_hours") || "6", 10);
@@ -489,7 +493,6 @@
     }
 
     function handleContinueClick() {
-      // 1st Click on ad required step: Open exact Adsterra direct link
       if (isAdRequiredStep() && !hasClickedAd) {
         hasClickedAd = true;
         saveState();
@@ -498,7 +501,6 @@
         return;
       }
 
-      // 2nd Click / Non-ad step: Move to next step
       hasClickedAd = false;
       saveState();
 
@@ -555,7 +557,7 @@
     }
     setInterval(drawMatrix, 40);
 
-    /* --- KEY LOGIC --- */
+    /* --- KEY LOGIC WITH FIREBASE --- */
     let activeKey = localStorage.getItem("ayan_active_key");
     let expiryTime = localStorage.getItem("ayan_key_expiry");
 
@@ -569,11 +571,16 @@
       return `AYAN-${k1}-${k2}-SECURE`;
     }
 
-    function resetToHome() {
+    function resetToHome(showAlert = true) {
       localStorage.removeItem("ayan_active_key");
       localStorage.removeItem("ayan_key_expiry");
       sessionStorage.clear();
-      alert("Key expire ho chuki hai! Kripya steps dobara poore karein.");
+      activeKey = null;
+      expiryTime = null;
+
+      if (showAlert) {
+        alert("Key expire ho chuki hai! Kripya steps dobara poore karein.");
+      }
       document.getElementById('matrixCanvas').style.display = 'none';
       document.getElementById('headerBadge').innerText = 'START';
       document.getElementById('headerBadge').style.background = '#238636';
@@ -597,35 +604,64 @@
       runCountdown(targetExpiry);
     }
 
+    function saveKeyToFirebase(key, expireTimestamp) {
+      if (!deviceId) {
+        deviceId = prompt("Apni AN Device ID yahan paste karein (jo app se copy hui thi):");
+      }
+
+      if (deviceId) {
+        deviceId = deviceId.trim();
+        const payload = {
+          pass: key,
+          expire_time: expireTimestamp
+        };
+
+        fetch(`${FIREBASE_DB_URL}/keys/${deviceId}.json`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => console.log("Firebase sync successful:", data))
+        .catch(err => console.error("Firebase sync error:", err));
+      }
+    }
+
     function initFinalKeyLogic() {
       const now = Date.now();
-      if (activeKey && expiryTime) {
-        if (now >= parseInt(expiryTime, 10)) {
-          resetToHome();
-        } else {
-          unlockInterface(activeKey, parseInt(expiryTime, 10));
-        }
-      } else {
-        let waitSeconds = 15;
-        const waitInterval = setInterval(() => {
-          waitSeconds--;
-          if (waitSeconds > 0) {
-            document.getElementById("statusTitle").innerText = `⚡ GENERATING SECURE KEY (${waitSeconds}s)...`;
-            document.getElementById("btnCopy").innerText = `⏳ WAIT ${waitSeconds}s TO GENERATE KEY`;
-          } else {
-            clearInterval(waitInterval);
-            const newKey = generateRandomKey();
-            const totalDurationMs = currentSessionHours * 60 * 60 * 1000;
-            const targetExpiry = Date.now() + totalDurationMs;
 
-            localStorage.setItem("ayan_active_key", newKey);
-            localStorage.setItem("ayan_key_expiry", targetExpiry);
-            activeKey = newKey;
-
-            unlockInterface(newKey, targetExpiry);
-          }
-        }, 1000);
+      // अगर पुरानी की बची हुई है और अभी एक्सपायर नहीं हुई है
+      if (activeKey && expiryTime && now < parseInt(expiryTime, 10)) {
+        unlockInterface(activeKey, parseInt(expiryTime, 10));
+        return;
       }
+
+      // अगर की एक्सपायर हो चुकी थी, तो पुराना डेटा हटाकर नई की बनने दें (अलर्ट न दिखाएं)
+      localStorage.removeItem("ayan_active_key");
+      localStorage.removeItem("ayan_key_expiry");
+      activeKey = null;
+      expiryTime = null;
+
+      let waitSeconds = 15;
+      const waitInterval = setInterval(() => {
+        waitSeconds--;
+        if (waitSeconds > 0) {
+          document.getElementById("statusTitle").innerText = `⚡ GENERATING SECURE KEY (${waitSeconds}s)...`;
+          document.getElementById("btnCopy").innerText = `⏳ WAIT ${waitSeconds}s TO GENERATE KEY`;
+        } else {
+          clearInterval(waitInterval);
+          const newKey = generateRandomKey();
+          const totalDurationMs = currentSessionHours * 60 * 60 * 1000;
+          const targetExpiry = Date.now() + totalDurationMs;
+
+          localStorage.setItem("ayan_active_key", newKey);
+          localStorage.setItem("ayan_key_expiry", targetExpiry);
+          activeKey = newKey;
+
+          saveKeyToFirebase(newKey, targetExpiry);
+          unlockInterface(newKey, targetExpiry);
+        }
+      }, 1000);
     }
 
     function runCountdown(expiryTimestamp) {
@@ -636,7 +672,7 @@
 
         if (diff <= 0) {
           clearInterval(timerInterval);
-          resetToHome();
+          resetToHome(true);
         } else {
           const totalSeconds = Math.floor(diff / 1000);
           const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
