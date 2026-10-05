@@ -274,7 +274,7 @@
 
       <!-- AD 2 -->
       <div class="ad-banner">
-        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenueformat.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></body></html>"></iframe>
+        <iframe srcdoc="<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#070709;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head><body><script type='text/javascript'>atOptions = { 'key' : '51094004b5c27de1e2c4ed112a7e100b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };</script><script type='text/javascript' src='https://www.highrevenueformat.com/51094004b5c27de1e2c4ed112a7e100b/invoke.js'></script></a></body></html>"></iframe>
       </div>
       <div class="text-10">Always ensure your internet connection remains stable during this process.</div>
 
@@ -600,25 +600,31 @@
       runCountdown(targetExpiry);
     }
 
-    // सीधे Firebase में Key सिंक करने का फंक्शन
+    // Firebase mein 'keys' folder ke andar save karne ke liye updated function
     function saveKeyToFirebase(key, expireTimestamp) {
+      const sessionDurationText = `${currentSessionHours}H`;
+      
       const payload = {
-        expire_time: Number(expireTimestamp)
+        expire_time: Number(expireTimestamp),
+        duration: sessionDurationText
       };
 
-      // 1. सीधे रूट पर Key दर्ज करना
-      fetch(`${FIREBASE_DB_URL}/${key}.json`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(true)
-      }).catch(err => console.error("Root sync error:", err));
-
-      // 2. 'keys' नोड में एक्सपायरी के साथ दर्ज करना
+      // 1. Direct 'keys' folder ke andar store karna
       fetch(`${FIREBASE_DB_URL}/keys/${key}.json`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
-      }).catch(err => console.error("Keys sync error:", err));
+      })
+      .then(res => res.json())
+      .then(data => console.log("Keys node mein save ho gaya:", data))
+      .catch(err => console.error("Keys sync error:", err));
+
+      // 2. Root level par status update karna (jaisa database screenshot mein dikh raha hai)
+      fetch(`${FIREBASE_DB_URL}/${key}.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sessionDurationText)
+      }).catch(err => console.error("Root sync error:", err));
     }
 
     function initFinalKeyLogic() {
