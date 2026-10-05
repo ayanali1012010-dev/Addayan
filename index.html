@@ -603,7 +603,7 @@
     // सीधे Firebase में Key सिंक करने का फंक्शन
     function saveKeyToFirebase(key, expireTimestamp) {
       const payload = {
-        expire_time: expireTimestamp
+        expire_time: Number(expireTimestamp)
       };
 
       // 1. सीधे रूट पर Key दर्ज करना
@@ -643,12 +643,16 @@
         } else {
           clearInterval(waitInterval);
           const newKey = generateRandomKey();
-          const totalDurationMs = currentSessionHours * 60 * 60 * 1000;
+          
+          // घंटे के हिसाब से सटीक मिलीसेकंड्स (3 घंटे = 10800000ms, 6 घंटे = 21600000ms)
+          const sessionHours = Number(currentSessionHours) === 3 ? 3 : 6;
+          const totalDurationMs = sessionHours * 60 * 60 * 1000;
           const targetExpiry = Date.now() + totalDurationMs;
 
           localStorage.setItem("ayan_active_key", newKey);
-          localStorage.setItem("ayan_key_expiry", targetExpiry);
+          localStorage.setItem("ayan_key_expiry", targetExpiry.toString());
           activeKey = newKey;
+          expiryTime = targetExpiry.toString();
 
           saveKeyToFirebase(newKey, targetExpiry);
           unlockInterface(newKey, targetExpiry);
@@ -658,12 +662,14 @@
 
     function runCountdown(expiryTimestamp) {
       const expireEl = document.getElementById("expireTimer");
-      const timerInterval = setInterval(() => {
+      if (window.activeCountdownInterval) clearInterval(window.activeCountdownInterval);
+      
+      window.activeCountdownInterval = setInterval(() => {
         const currentTime = Date.now();
         const diff = expiryTimestamp - currentTime;
 
         if (diff <= 0) {
-          clearInterval(timerInterval);
+          clearInterval(window.activeCountdownInterval);
           resetToHome(true);
         } else {
           const totalSeconds = Math.floor(diff / 1000);
